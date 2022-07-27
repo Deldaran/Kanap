@@ -1,16 +1,10 @@
 /**
  * Gére l'affichage dynamique de index.html
  */
-class Product{
-    constructor(jsonProduct){
-        jsonProduct && Object.assign(this, jsonProduct)
-    }
-}
 fetch("http://localhost:3000/api/products")
 .then( data => data.json())
 .then( jsonListProduct =>{
-    for(let jsonProduct of jsonListProduct){
-        let product = new Product(jsonProduct);
+    for(let product of jsonListProduct){
         document.querySelector(".items").innerHTML += `<a href="./product.html?id=${product._id}">
                                                                 <article>
                                                                 <img src="${product.imageUrl}" alt="${product.altTxt}">
@@ -19,4 +13,4 @@ fetch("http://localhost:3000/api/products")
                                                                 </article>
                                                             </a>`;
     }
-});
+});/**Demande grace a la méthode GET pour récuper les données des produits et créer donc chaque carte par produit et l'inclus dans le DOM  */
