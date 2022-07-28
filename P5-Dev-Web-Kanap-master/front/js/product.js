@@ -6,6 +6,8 @@
     const productId = getProductId()
     const product = await getProduct(productId)
     hydrateProduct(product)
+    addpanier(product)
+    
 })()
 
 
@@ -28,6 +30,14 @@ function hydrateProduct(product){
     document.querySelector("#description").textContent += `${product.description}`
 }
 
+
+function addpanier(product){
+const addPanier = document.getElementById('addToCart');
+addPanier.addEventListener('click',function(){
+        localStorage.setItem(`id`,`${product._id}`),
+        localStorage.setItem('quantity', '1')
+    })
+}
 
 
 
