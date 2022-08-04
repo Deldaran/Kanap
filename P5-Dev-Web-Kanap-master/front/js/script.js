@@ -1,6 +1,7 @@
 /**
  * Gére l'affichage dynamique de index.html
  */
+//Demande grace a la méthode GET pour récuper les données des produits et créer donc chaque carte par produit et l'inclus dans le DOM  
 fetch("http://localhost:3000/api/products")
 .then( data => data.json())
 .then( jsonListProduct =>{
@@ -13,4 +14,4 @@ fetch("http://localhost:3000/api/products")
                                                                 </article>
                                                             </a>`;
     }
-});/**Demande grace a la méthode GET pour récuper les données des produits et créer donc chaque carte par produit et l'inclus dans le DOM  */
+});

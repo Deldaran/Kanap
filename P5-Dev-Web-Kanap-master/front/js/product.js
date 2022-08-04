@@ -5,13 +5,12 @@
 (async function() {
     const productId = getProductId()
     const product = await getProduct(productId)
+    console.log(product)
+    console.log(product);
     hydrateProduct(product)
-   
-    const data = addPanier(product)
-    const cont = equalverif(data)
+    addPanier(product, productId)
     colorsValue(product)
     
-    //resultQuantity(cont)
 })()
 
 
@@ -35,50 +34,28 @@ function hydrateProduct(product){
 }
 
 
-//permet de verifier les données du localStorage et du panier et de créer si localStorage = null 
-function equalverif(data){
-    let equalObject = JSON.parse((localStorage.getItem('userData')))
-    const add = document.getElementById('addToCart');
-    add.addEventListener('click', function(){
-    if( equalObject === null){
-        localStorage.setItem('userData', dataJSON); 
-    }
-    else{let obj = equalObject.id
-        let objId = JSON.parse(dataJSON)
-        let obj2 = objId.id
-        let result = obj === obj2
-        return result
-    }})
-}
-
-/**function resultQuantity(cont){
-    const add = document.getElementById('addToCart');
-    add.addEventListener('click', function(){
-    if(result== true){
-        console.log('créer quantity')
-    }
-    else{
-        console.log('error')
-    }})
-}*/
-
-// créer un variable data qui contien le produit 
-function addPanier(product){
-    let output = ""
-    let selectElement = document.querySelector("#colors")
-    selectElement.addEventListener("change",function(){
-        let select = selectElement.selectedIndex - 1;
-        return output = product.colors[select]
-    })
-    selectElement.addEventListener("change",function(){
-    let data = {
-        id: `${product._id}`,
-        quantity: 1,
-        color : output
+// créer un variable data qui contien le produit et le push dans le local storage
+function addPanier(productId){
+    let selectElement = document.getElementById("addToCart")
+    selectElement.addEventListener("click", () => {
+        let data = {
+        id: productId._id ,
+        quantity : document.getElementById('quantity').value,
+        color : document.getElementById('colors').value
         }
-        dataJSON = JSON.stringify(data);
-        console.log(data)
-    }) 
+    let storage = JSON.parse(localStorage.getItem("userPanier"))
+        if(storage){
+            storage.push(data)
+            localStorage.setItem("userPanier", JSON.stringify(storage))
+            console.log(storage)
+        }
+        else{
+            storage = []
+            storage.push(data)
+            console.log(storage)
+            localStorage.setItem("userPanier", JSON.stringify(storage))
+        }
+    })
 }
 
 //ajoute l'option qui permet de choisir les couleurs 
