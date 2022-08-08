@@ -5,8 +5,6 @@
 (async function() {
     const productId = getProductId()
     const product = await getProduct(productId)
-    console.log(product)
-    console.log(product);
     hydrateProduct(product)
     addPanier(product, productId)
     colorsValue(product)
@@ -40,22 +38,41 @@ function addPanier(productId){
     selectElement.addEventListener("click", () => {
         let data = {
         id: productId._id ,
-        quantity : document.getElementById('quantity').value,
+        quantity : parseInt(document.getElementById('quantity').value, 10),
         color : document.getElementById('colors').value
         }
     let storage = JSON.parse(localStorage.getItem("userPanier"))
-        if(storage){
+    
+    if(storage) {
+        //probleme a parir de 3 l'element inclus dans elementAna n'est pas le bon
+        let elementAna = [] 
+        for(i=0;i<storage.length;i++){ 
+            if(storage[i].id === data.id && storage[i].color=== data.color)
+            elementAna = storage[i]
+        }
+        elementIndex = storage.indexOf(elementAna)
+        if(elementAna.id === data.id && elementAna.color === data.color){
+            el1 = parseInt(storage[elementIndex].quantity,10)
+            el2 = parseInt(data.quantity,10)
+            data.quantity = el1 + el2
+            storage.splice(elementIndex, 1)
             storage.push(data)
             localStorage.setItem("userPanier", JSON.stringify(storage))
-            console.log(storage)
+            
+            
         }
         else{
-            storage = []
             storage.push(data)
-            console.log(storage)
             localStorage.setItem("userPanier", JSON.stringify(storage))
         }
+    }
+    else{
+        storage = []
+        storage.push(data)
+        
+        localStorage.setItem("userPanier", JSON.stringify(storage))}
     })
+    
 }
 
 //ajoute l'option qui permet de choisir les couleurs 

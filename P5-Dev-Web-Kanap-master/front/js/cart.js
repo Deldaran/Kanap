@@ -1,9 +1,9 @@
 
 (async function(){
     let data =JSON.parse(localStorage.getItem("userPanier"));
+    console.log(data)
     const product = getProduct(data)
     const apiProduct = await getApiProduct(product)
-    console.log(apiProduct);
     
     
     
@@ -12,13 +12,22 @@
     
 })()
 
+function changeQuantity(){
+    document.querySelector("#")
+}
+
 //récupére l'id des produit dans le panier 
 function getProduct(data){
-    let localData = []
-    for( i=0 ; i < data.length ; i++) {
-     localData[i] = {id : data[i].id}
+    let localdata = []
+    if(data== null){
+        alert('Le panier est vide')
     }
-     return localData
+    else{
+        for( i=0 ; i < data.length ; i++) {
+            localdata[i] = {id : data[i].id}
+        }
+     return localdata
+    }
 }
 //récupére les detaille du produit dans l'api
 function getApiProduct(product){
@@ -36,7 +45,6 @@ function getApiProduct(product){
 }
  //créer le panier 
 function addPanier(data,apiProduct){
-    console.log(data);
     for(i=0; i< apiProduct.length; i++){
         document.querySelector("#cart__items").innerHTML +=`<article class="cart__item" data-id="${apiProduct[i].id}" data-color="${data[i].color}">
                                             <div class="cart__item__img">
@@ -61,5 +69,6 @@ function addPanier(data,apiProduct){
                                         </article>`
 
     }
+    document.querySelector("#totalQuantity")
 }
 
