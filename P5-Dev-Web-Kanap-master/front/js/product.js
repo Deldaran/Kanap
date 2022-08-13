@@ -44,7 +44,6 @@ function addPanier(productId){
     let storage = JSON.parse(localStorage.getItem("userPanier"))
     
     if(storage) {
-        //probleme a parir de 3 l'element inclus dans elementAna n'est pas le bon
         let elementAna = [] 
         for(i=0;i<storage.length;i++){ 
             if(storage[i].id === data.id && storage[i].color=== data.color)

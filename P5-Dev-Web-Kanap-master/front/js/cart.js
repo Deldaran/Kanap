@@ -1,19 +1,50 @@
 
 (async function(){
     let data =JSON.parse(localStorage.getItem("userPanier"));
-    console.log(data)
     const product = getProduct(data)
     const apiProduct = await getApiProduct(product)
-    
-    
-    
     addPanier(data,apiProduct)
-    
-    
+    changeQuantity(data)
+    suppProduit(data)
+    verifForm()
 })()
 
-function changeQuantity(){
-    document.querySelector("#")
+function changeQuantity(data){
+    const boxes = document.querySelectorAll('#cart__items input');
+
+        boxes.forEach(box => {
+        box.addEventListener('change', function handleChange(event) {
+           let id = this.closest('.cart__item').dataset.id
+           for(i=0; i<data.length; i++){
+            if(data[i].id === id){
+                data[i].quantity = event.target.value
+                localStorage.setItem("userPanier", JSON.stringify(data))
+                window.location.reload()
+            }
+           }
+           
+        });
+        });
+    
+}
+//permet de supprimer un roduit
+function suppProduit(data){
+    const cards = document.querySelectorAll('.deleteItem');
+    cards.forEach(card => {
+        card.addEventListener('click',function (){
+            let idSupp = this.closest('.cart__item').dataset.id
+            let storage = JSON.parse(localStorage.getItem("userPanier"))
+            for(i=0; i<data.length; i++){
+                if(data[i].id === idSupp){
+                    data.splice(i,1)
+                    localStorage.setItem("userPanier", JSON.stringify(data))
+                    window.location.reload()
+                }
+            }
+
+        })
+
+    })
 }
 
 //récupére l'id des produit dans le panier 
@@ -45,8 +76,12 @@ function getApiProduct(product){
 }
  //créer le panier 
 function addPanier(data,apiProduct){
+    let total = 0
+    let articles =0
     for(i=0; i< apiProduct.length; i++){
-        document.querySelector("#cart__items").innerHTML +=`<article class="cart__item" data-id="${apiProduct[i].id}" data-color="${data[i].color}">
+     total = total + apiProduct[i].price * data[i].quantity
+     articles = articles + data[i].quantity
+        document.querySelector("#cart__items").innerHTML +=`<article class="cart__item" data-id="${apiProduct[i]._id}" data-color="${data[i].color}">
                                             <div class="cart__item__img">
                                             <img src=${apiProduct[i].imageUrl} alt="${apiProduct[i].description}">
                                             </div>
@@ -69,6 +104,19 @@ function addPanier(data,apiProduct){
                                         </article>`
 
     }
-    document.querySelector("#totalQuantity")
+    
+    document.querySelector("#totalPrice").textContent += `${total}`;
+    document.querySelector("#totalQuantity").textContent += `${articles}`
+    
 }
+function verifForm(){
+    let email= document.querySelector('input[name="address"]')
+    //email.addEventListener('change', function handleChange(event){
+        emailVer= location.search.substring(1)
+        let masque = new RegExp(/a@b/)
+        let verif = emailVer.match(masque)
+        console.log(emailVer)
+    //})
+    
 
+}
