@@ -32,7 +32,7 @@ function hydrateProduct(product){
 }
 
 
-// créer un variable data qui contien le produit et le push dans le local storage
+// créer un variable data qui contien le produit et le push dans le local storage selon les paramétres
 function addPanier(productId){
     let selectElement = document.getElementById("addToCart")
     selectElement.addEventListener("click", () => {

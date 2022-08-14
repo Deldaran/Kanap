@@ -7,8 +7,9 @@
     changeQuantity(data)
     suppProduit(data)
     verifForm()
+    caculeProd(data,apiProduct)
 })()
-
+//change la quantié d'un produit
 function changeQuantity(data){
     const boxes = document.querySelectorAll('#cart__items input');
 
@@ -22,7 +23,6 @@ function changeQuantity(data){
                 window.location.reload()
             }
            }
-           
         });
         });
     
@@ -74,13 +74,22 @@ function getApiProduct(product){
     
     
 }
- //créer le panier 
-function addPanier(data,apiProduct){
+//cacule total produit
+function caculeProd(data,apiProduct){
     let total = 0
     let articles =0
+    for (i=0;i<data.length;i++ ){
+        total = total + apiProduct[i].price * data[i].quantity
+        articles = articles + parseInt(data[i].quantity)
+    }
+    document.querySelector("#totalPrice").textContent += `${total}`;
+        document.querySelector("#totalQuantity").textContent += `${articles}`
+}
+ //créer le panier 
+function addPanier(data,apiProduct){
+    
     for(i=0; i< apiProduct.length; i++){
-     total = total + apiProduct[i].price * data[i].quantity
-     articles = articles + data[i].quantity
+    
         document.querySelector("#cart__items").innerHTML +=`<article class="cart__item" data-id="${apiProduct[i]._id}" data-color="${data[i].color}">
                                             <div class="cart__item__img">
                                             <img src=${apiProduct[i].imageUrl} alt="${apiProduct[i].description}">
@@ -105,18 +114,24 @@ function addPanier(data,apiProduct){
 
     }
     
-    document.querySelector("#totalPrice").textContent += `${total}`;
-    document.querySelector("#totalQuantity").textContent += `${articles}`
+    
     
 }
-function verifForm(){
-    let email= document.querySelector('input[name="address"]')
-    //email.addEventListener('change', function handleChange(event){
-        emailVer= location.search.substring(1)
-        let masque = new RegExp(/a@b/)
-        let verif = emailVer.match(masque)
-        console.log(emailVer)
-    //})
-    
-
+function verifForm(email){
+    let dataEmail=document.querySelector(".cart__order__form");
+        dataEmail.addEventListener('change',function (){
+            let email 	= document.getElementById("email").value;
+           let verif 	= /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
+           if (verif.exec(email) == null)
+        {
+            alert("Votre email est incorrecte");
+            return false;
+        }
+        else
+        {
+            alert("Votre email est correcte");
+            return true;
+        }
+        })
+        	
 }
