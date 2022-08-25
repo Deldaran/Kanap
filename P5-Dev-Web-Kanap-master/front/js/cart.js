@@ -8,7 +8,9 @@
     suppProduit(data)
     caculeProd(data,apiProduct)
     const validForm = creatForm(data)
-    formSubmit(data)
+    const order =  formSubmit(data)
+    
+    creatOrderId(order)
 })()
 //change la quantié d'un produit
 function changeQuantity(data){
@@ -18,7 +20,7 @@ function changeQuantity(data){
         box.addEventListener('change', function handleChange(event) {
            let id = this.closest('.cart__item').dataset.id
            for(i=0; i<data.length; i++){
-            //element.id for each
+            //element.id for each 
             if(data[i].id === id){
                 data[i].quantity = event.target.value
                 localStorage.setItem("userPanier", JSON.stringify(data))
@@ -192,7 +194,7 @@ function creatForm (data){
             let dataId = []
             data.forEach(element => {
              dataId.push(element.id)
-            });
+            })
             let form = { contact : {
                 firstName: document.getElementById("firstName").value,
                 lastName : document.getElementById("lastName").value,
@@ -202,23 +204,36 @@ function creatForm (data){
                 
                 products : dataId
             }
-                newForm= JSON.stringify(form)
-                fetch("http://localhost:3000/api/products/order", {
+                
+                 let promise = (fetch("http://localhost:3000/api/products/order", {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                       },
                         method: "POST",
-                        body: newForm
+                        body: JSON.stringify(form)
                     })
                     .then( res => res.json())
-                    .catch( error => alert(error))
+                    .catch( error => alert('error')))
+                    
         })
     }
     
 /**
  * recuperer le orderId si il existe window location ver page confirm sinon erreur
  */
+function creatOrderId(order){
+    const submit = document.querySelector(".cart__order__form__submit input[id='order']") 
+    submit.addEventListener('click', function(event){
+        /*if(order == null){
+            alert('error')
+        }
+        else{*/
+            console.log(order);
+            //window.location = `confirmation.html? ${orderId}`
+        //}
+})
+}
 
 
 
