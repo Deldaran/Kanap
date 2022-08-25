@@ -3,47 +3,47 @@
     let data =JSON.parse(localStorage.getItem("userPanier"));
     const product = getProduct(data)
     const apiProduct = await getApiProduct(product)
-    addPanier(data,apiProduct)
+    addCart(data,apiProduct)
     changeQuantity(data)
-    suppProduit(data)
-    caculeProd(data,apiProduct)
-    const validForm = creatForm(data)
+    deleteProduct(data)
+    calculatePrice(data,apiProduct)
     const order =  formSubmit(data)
-    
-    creatOrderId(order)
 })()
 //change la quantié d'un produit
-function changeQuantity(data){
+function changeQuantity(cart_items){
     const boxes = document.querySelectorAll('#cart__items input');
 
         boxes.forEach(box => {
         box.addEventListener('change', function handleChange(event) {
            let id = this.closest('.cart__item').dataset.id
-           for(i=0; i<data.length; i++){
-            //element.id for each 
-            if(data[i].id === id){
-                data[i].quantity = event.target.value
-                localStorage.setItem("userPanier", JSON.stringify(data))
-                window.location.reload()
-            }
-           }
+           cart_items.forEach(item => {
+                if(item.id == id){
+                    item.quantity = parseInt(event.target.value)
+                    localStorage.setItem("userPanier", JSON.stringify(cart_items))
+                    window.location.href += "#cart__items";
+                    location.reload();
+                }
+           });
+
         });
         });
     
 }
 //permet de supprimer un roduit
-function suppProduit(data){
+function deleteProduct(cart_items){
     const cards = document.querySelectorAll('.deleteItem');
     cards.forEach(card => {
         card.addEventListener('click',function (){
             let idSupp = this.closest('.cart__item').dataset.id
-            for(i=0; i<data.length; i++){
-                if(data[i].id === idSupp){
-                    data.splice(i,1)
-                    localStorage.setItem("userPanier", JSON.stringify(data))
-                    window.location.reload()
+            cart_items.forEach(function callback(item, key) {
+                if(item.id == idSupp){
+                    cart_items.splice(key,1)
+                    localStorage.setItem("userPanier", JSON.stringify(cart_items))
+                    window.location.href += "#cart__items";
+                    location.reload();
                 }
-            }
+
+            })
 
         })
 
@@ -78,7 +78,7 @@ function getApiProduct(product){
     
 }
 //cacule total produit
-function caculeProd(data,apiProduct){
+function calculatePrice(data,apiProduct){
     let total = 0
     let articles =0
     for (i=0;i<data.length;i++ ){
@@ -89,7 +89,7 @@ function caculeProd(data,apiProduct){
         document.querySelector("#totalQuantity").textContent += `${articles}`
 }
  //créer le panier 
-function addPanier(data,apiProduct){
+function addCart(data,apiProduct){
     
     for(i=0; i< apiProduct.length; i++){
     
@@ -120,77 +120,61 @@ function addPanier(data,apiProduct){
     
     
 }
-
-function creatForm (data){
-    //click verifier regex 
-        let formArray= []
-        let verifEmail 	= /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/;
-        let verifName = /^[a-zA-Z\-]+$/;
-        let verifAddress = /^[0-9a-zA-Z\s,-]+$/;
-        let verifCity = /^[A-Z][-a-zA-Z]+$/;
-        let locationFirstName = document.querySelector(".cart__order__form input[name='firstName']");
-        let locationLastName = document.querySelector(".cart__order__form input[name='lastName']");
-        let locationAddress = document.querySelector(".cart__order__form input[name='address']");
-        let locationverifCity = document.querySelector(".cart__order__form input[name='city']");
-        let locationEmail = document.querySelector(".cart__order__form input[name='email']");
-        locationFirstName.addEventListener('change',function(){
-            let firstName = document.getElementById("firstName").value
-            if(verifName.exec(firstName) == null){
-            document.querySelector("#firstNameErrorMsg").textContent ="Le Nom est éronnée"
-            }
-            else{
-                document.querySelector("#firstNameErrorMsg").textContent =''
-                
-            }
-        })
-        locationLastName.addEventListener('change',function(){
-            let lastName = document.getElementById("lastName").value
-            if(verifName.exec(lastName)== null){
-                document.querySelector("#lastNameErrorMsg").textContent ="Le prénom est éronnée"
-            }
-            else{
-                document.querySelector("#lastNameErrorMsg").textContent =''
-                
-            }
-        })
-        locationAddress.addEventListener('change',function(){
-            let address = document.getElementById("address").value
-            if(verifAddress.exec(address) == null){
-            document.querySelector("#addressErrorMsg").textContent ="L'adrèsse est éronnée"
-            }
-            else{
-                document.querySelector("#addressErrorMsg").textContent =''
-                
-            }
-        })
-        locationverifCity.addEventListener('change',function(){
-            let city = document.getElementById("city").value
-            if(verifCity.exec(city) == null){
-                document.querySelector("#cityErrorMsg").textContent ="La ville est éronnée"
-            }
-            else{
-                document.querySelector("#cityErrorMsg").textContent =''
-            }
-        })
-        locationEmail.addEventListener('change',function (){
-            let email = document.getElementById("email").value
-            if( verifEmail.exec(email) == null){
-                document.querySelector("#emailErrorMsg").textContent = "L'email est éronnée"
-            }
-            else{
-                document.querySelector("#emailErrorMsg").textContent =''
-                }
-            
-        })
-            
-}
     
 
     function formSubmit(data) {
-        
+         
         const submit = document.querySelector(".cart__order__form__submit input[id='order']") 
         submit.addEventListener('click', function(event){
             event.preventDefault();
+
+            // Controle de validité des champs
+            let errors = false;
+            let verifEmail 	= /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/;
+            let verifName = /^[a-zA-Z\-]+$/;
+            let verifAddress = /^[0-9a-zA-Z\s,-]+$/;
+            let verifCity = /^[A-Z][-a-zA-Z\s]+$/;
+            const error_messages = document.querySelectorAll('.error-message');
+            error_messages.forEach(error_message => {
+                error_message.innerHTML = '';
+            });
+
+            let firstName = document.getElementById("firstName").value
+            if(verifName.exec(firstName)== null || firstName.value == ''){
+                document.querySelector("#firstNameErrorMsg").textContent ="Le prénom est éronnée"
+                errors = true;
+            }
+
+            let lastName = document.getElementById("lastName").value
+            if(verifName.exec(lastName) == null || lastName.value == ''){
+                document.querySelector("#lastNameErrorMsg").textContent ="Le prénom est éronnée"
+                errors = true;
+            }
+            
+
+            let address = document.getElementById("address").value
+            if(verifAddress.exec(address)== null || address.value == ''){
+                document.querySelector("#addressErrorMsg").textContent = "Le prénom est éronnée"
+                errors = true;
+            }
+
+            let city = document.getElementById("city").value
+            if(verifCity.exec(city)== null || city.value == ''){
+                document.querySelector("#cityErrorMsg").textContent = "Le prénom est éronnée"
+                errors = true;
+            }
+
+            let email = document.getElementById("email").value
+            if(verifEmail.exec(email)== null || email.value == ''){
+                document.querySelector("#emailErrorMsg").textContent = "Le prénom est éronnée"
+                errors = true;
+            }
+
+            // Si il y a des erreurs, on envoi pas le formulaire
+            if(errors == true){
+                return false;
+            }
+
             let dataId = []
             data.forEach(element => {
              dataId.push(element.id)
@@ -204,8 +188,8 @@ function creatForm (data){
                 
                 products : dataId
             }
-                
-                 let promise = (fetch("http://localhost:3000/api/products/order", {
+            
+                fetch("http://localhost:3000/api/products/order", {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
@@ -213,27 +197,27 @@ function creatForm (data){
                         method: "POST",
                         body: JSON.stringify(form)
                     })
-                    .then( res => res.json())
-                    .catch( error => alert('error')))
-                    
+                .then(res => res.json())
+                //.then(promise => orderId = promise.orderId)
+                .then(function(response) {
+                   console.log(response.orderId);
+                    let orderId =response.orderId
+                    if(orderId == null){
+                        alert (error)
+                    }
+                    else{
+                        window.location =`confirmation.html?id=${orderId}`
+                    }
+                  })
+                .catch( error => alert('error'))
+                
         })
     }
     
 /**
  * recuperer le orderId si il existe window location ver page confirm sinon erreur
  */
-function creatOrderId(order){
-    const submit = document.querySelector(".cart__order__form__submit input[id='order']") 
-    submit.addEventListener('click', function(event){
-        /*if(order == null){
-            alert('error')
-        }
-        else{*/
-            console.log(order);
-            //window.location = `confirmation.html? ${orderId}`
-        //}
-})
-}
+
 
 
 

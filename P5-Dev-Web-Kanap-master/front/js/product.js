@@ -6,7 +6,7 @@
     const productId = getProductId()
     const product = await getProduct(productId)
     hydrateProduct(product)
-    addPanier(product, productId)
+    addCart(product, productId)
     colorsValue(product)
     
 })()
@@ -33,7 +33,7 @@ function hydrateProduct(product){
 
 
 // créer un variable data qui contien le produit et le push dans le local storage selon les paramétres
-function addPanier(productId){
+function addCart(productId){
     let selectElement = document.getElementById("addToCart")
     selectElement.addEventListener("click", () => {
         let data = {
