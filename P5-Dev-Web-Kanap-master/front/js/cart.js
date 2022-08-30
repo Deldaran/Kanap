@@ -115,7 +115,6 @@ function addCart(cart_items,apiProduct){
     }
     
     
-    
 }
     
 
