@@ -7,14 +7,13 @@
     changeQuantity(cart_items);
     deleteProduct(cart_items);
     calculatePrice(cart_items,apiProduct);
-    const order =  formSubmit(cart_items);
+    formSubmit(cart_items);
 })()
 //change la quantié d'un produit
 function changeQuantity(cart_items){
-    const boxes = document.querySelectorAll('#cart__items input');
-
-        boxes.forEach(box => {
-        box.addEventListener('change', function handleChange(event) {
+    const cartInput = document.querySelectorAll('#cart__items input');
+        cartInput.forEach(inputElement => {
+        inputElement.addEventListener('change', function handleChange(event) {
            let id = this.closest('.cart__item').dataset.id;
            cart_items.forEach(item => {
                 if(item.id == id){
@@ -42,11 +41,8 @@ function deleteProduct(cart_items){
                     window.location.href = "#cart__items";
                     location.reload();
                 }
-
             })
-
         })
-
     })
 }
 
@@ -60,17 +56,17 @@ function getProduct(cart_items){
         for( i=0 ; i < cart_items.length ; i++) {
             localcart_items[i] = {id : cart_items[i].id};
         }
-     return localcart_items;
+    return localcart_items;
     }
 }
 //récupére les detaille du produit dans l'api
 function getApiProduct(product){
     let id= [];
     for(i=0 ; i<product.length ; i++){
-    let response = (fetch(`http://localhost:3000/api/products/${product[i].id}`)
-                    .then(res => res.json()))
-                    .catch( error => alert('error'))       
-    id.push(response);
+        let response = (fetch(`http://localhost:3000/api/products/${product[i].id}`)
+                        .then(res => res.json()))
+                        .catch( error => alert('error'))       
+        id.push(response);
     }
     return Promise.all(id);
 }
@@ -83,7 +79,7 @@ function calculatePrice(cart_items,apiProduct){
         articles = articles + parseInt(cart_items[i].quantity);
     }
     document.querySelector("#totalPrice").textContent += `${total}`;
-        document.querySelector("#totalQuantity").textContent += `${articles}`;
+    document.querySelector("#totalQuantity").textContent += `${articles}`;
 }
  //créer le panier 
 function addCart(cart_items,apiProduct){
@@ -134,43 +130,35 @@ function addCart(cart_items,apiProduct){
             error_messages.forEach(error_message => {
                 error_message.innerHTML = '';
             });
-
             let firstName = document.getElementById("firstName").value;
             if(verifName.exec(firstName)== null || firstName.value == ''){
                 document.querySelector("#firstNameErrorMsg").textContent ="Le prénom est éronnée";
                 errors = true;
             }
-
             let lastName = document.getElementById("lastName").value
             if(verifName.exec(lastName) == null || lastName.value == ''){
                 document.querySelector("#lastNameErrorMsg").textContent ="Le nom est éronnée";
                 errors = true;
             }
-            
-
             let address = document.getElementById("address").value
             if(verifAddress.exec(address)== null || address.value == ''){
                 document.querySelector("#addressErrorMsg").textContent = "L'adresse' est éronnée";
                 errors = true;
             }
-
             let city = document.getElementById("city").value
             if(verifCity.exec(city)== null || city.value == ''){
                 document.querySelector("#cityErrorMsg").textContent = "Le nom de la ville est éronnée";
                 errors = true;
             }
-
             let email = document.getElementById("email").value
             if(verifEmail.exec(email)== null || email.value == ''){
                 document.querySelector("#emailErrorMsg").textContent = "L'émail est éronnée";
                 errors = true;
             }
-
             // Si il y a des erreurs, on envoi pas le formulaire
             if(errors == true){
                 return false;
             }
-
             let cart_itemsId = []
             cart_items.forEach(element => {
              cart_itemsId.push(element.id);
@@ -180,11 +168,9 @@ function addCart(cart_items,apiProduct){
                 lastName : document.getElementById("lastName").value,
                 address : document.getElementById("address").value,
                 city : document.getElementById("city").value,
-                email : document.getElementById("email").value,},
-                
+                email : document.getElementById("email").value,}, 
                 products : cart_itemsId
             };
-            
                 fetch("http://localhost:3000/api/products/order", {
                     headers: {
                         'Accept': 'application/json',

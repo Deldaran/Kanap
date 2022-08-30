@@ -35,7 +35,6 @@ function hydrateProduct(product){
     document.querySelector("#description").textContent += `${product.description}`
 }
 
-
 // créer un variable dataOfProduct qui contien le produit et le push dans le local storage selon les paramétres
 function addCart(productId){
     let selectElement = document.getElementById("addToCart");
@@ -60,8 +59,6 @@ function addCart(productId){
             storage.splice(elementIndex, 1);
             storage.push(dataOfProduct);
             localStorage.setItem("userPanier", JSON.stringify(storage));
-            
-            
         }
         else{
             storage.push(dataOfProduct);
@@ -74,7 +71,6 @@ function addCart(productId){
         localStorage.setItem("userPanier", JSON.stringify(storage));
     }
     })
-    
 }
 
 //ajoute l'option qui permet de choisir les couleurs 
