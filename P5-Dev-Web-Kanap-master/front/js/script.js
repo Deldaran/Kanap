@@ -1,7 +1,7 @@
 /**
  * Gére l'affichage dynamique de index.html
  */
-//Demande grace a la méthode GET pour récuper les données des produits et créer donc chaque carte par produit et l'inclus dans le DOM  
+//Demande grâce a la méthode GET pour récupérer les données des produits et créer donc chaque carte par produit et l'inclus dans le DOM  
 fetch("http://localhost:3000/api/products")
 .then( data => data.json())
 .then( jsonListProduct =>{
@@ -13,5 +13,6 @@ fetch("http://localhost:3000/api/products")
                                                                 <p class="productDescription">${product.description}</p>
                                                                 </article>
                                                             </a>`;
-    }
-});
+    } 
+})
+.catch(error => alert("Impossible de récupérer les articles"));

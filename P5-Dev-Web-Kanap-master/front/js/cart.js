@@ -9,10 +9,10 @@
     calculatePrice(cart_items,apiProduct);
     formSubmit(cart_items);
 })()
-//change la quantié d'un produit
+//Change la quantité d'un produit
 function changeQuantity(cart_items){
     const cartInput = document.querySelectorAll('#cart__items input');
-        cartInput.forEach(inputElement => {
+    cartInput.forEach(inputElement => {
         inputElement.addEventListener('change', function handleChange(event) {
            let id = this.closest('.cart__item').dataset.id;
            cart_items.forEach(item => {
@@ -23,12 +23,10 @@ function changeQuantity(cart_items){
                     location.reload();
                 }
            });
-
         });
-        });
-    
+    });
 }
-//permet de supprimer un roduit
+//Permet de supprimer un produit
 function deleteProduct(cart_items){
     const cards = document.querySelectorAll('.deleteItem');
     cards.forEach(card => {
@@ -46,7 +44,7 @@ function deleteProduct(cart_items){
     })
 }
 
-//récupére l'id des produit dans le panier 
+//Récupère l'id des produit dans le panier 
 function getProduct(cart_items){
     let localcart_items = [];
     if(cart_items== null){
@@ -59,18 +57,18 @@ function getProduct(cart_items){
     return localcart_items;
     }
 }
-//récupére les detaille du produit dans l'api
+//Récupère les détaille du produit dans l'API
 function getApiProduct(product){
     let id= [];
     for(i=0 ; i<product.length ; i++){
         let response = (fetch(`http://localhost:3000/api/products/${product[i].id}`)
                         .then(res => res.json()))
-                        .catch( error => alert('error'))       
+                        .catch( error => alert('Impossible de récuperer le produit'))       
         id.push(response);
     }
     return Promise.all(id);
 }
-//cacule total produit
+//Calcule le total des produits
 function calculatePrice(cart_items,apiProduct){
     let total = 0;
     let articles =0;
@@ -83,9 +81,7 @@ function calculatePrice(cart_items,apiProduct){
 }
  //créer le panier 
 function addCart(cart_items,apiProduct){
-    
     for(i=0; i< apiProduct.length; i++){
-    
         document.querySelector("#cart__items").innerHTML +=`<article class="cart__item" data-id="${apiProduct[i]._id}" data-color="${cart_items[i].color}">
                                             <div class="cart__item__img">
                                             <img src=${apiProduct[i].imageUrl} alt="${apiProduct[i].description}">
@@ -109,96 +105,85 @@ function addCart(cart_items,apiProduct){
                                         </article>`;
 
     }
-    
-    
 }
-    
-
-    function formSubmit(cart_items) {
-         
-        const submit = document.querySelector(".cart__order__form__submit input[id='order']") ;
-        submit.addEventListener('click', function(event){
-            event.preventDefault();
-
-            // Controle de validité des champs
-            let errors = false;
-            let verifEmail 	= /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/;
-            let verifName = /^[a-zA-Z\-]+$/;
-            let verifAddress = /^[0-9a-zA-Z\s,-]+$/;
-            let verifCity = /^[A-Z][-a-zA-Z\s]+$/;
-            const error_messages = document.querySelectorAll('.error-message');
-            error_messages.forEach(error_message => {
-                error_message.innerHTML = '';
-            });
-            let firstName = document.getElementById("firstName").value;
-            if(verifName.exec(firstName)== null || firstName.value == ''){
-                document.querySelector("#firstNameErrorMsg").textContent ="Le prénom est éronnée";
-                errors = true;
-            }
-            let lastName = document.getElementById("lastName").value
-            if(verifName.exec(lastName) == null || lastName.value == ''){
-                document.querySelector("#lastNameErrorMsg").textContent ="Le nom est éronnée";
-                errors = true;
-            }
-            let address = document.getElementById("address").value
-            if(verifAddress.exec(address)== null || address.value == ''){
-                document.querySelector("#addressErrorMsg").textContent = "L'adresse' est éronnée";
-                errors = true;
-            }
-            let city = document.getElementById("city").value
-            if(verifCity.exec(city)== null || city.value == ''){
-                document.querySelector("#cityErrorMsg").textContent = "Le nom de la ville est éronnée";
-                errors = true;
-            }
-            let email = document.getElementById("email").value
-            if(verifEmail.exec(email)== null || email.value == ''){
-                document.querySelector("#emailErrorMsg").textContent = "L'émail est éronnée";
-                errors = true;
-            }
-            // Si il y a des erreurs, on envoi pas le formulaire
-            if(errors == true){
-                return false;
-            }
-            let cart_itemsId = []
-            cart_items.forEach(element => {
-             cart_itemsId.push(element.id);
-            })
-            let form = { contact : {
-                firstName: document.getElementById("firstName").value,
-                lastName : document.getElementById("lastName").value,
-                address : document.getElementById("address").value,
-                city : document.getElementById("city").value,
-                email : document.getElementById("email").value,}, 
-                products : cart_itemsId
-            };
-                fetch("http://localhost:3000/api/products/order", {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                      },
-                        method: "POST",
-                        body: JSON.stringify(form)
-                    })
-                .then(res => res.json())
-                //.then(promise => orderId = promise.orderId)
-                .then(function(response) {
-                   console.log(response.orderId);
-                    let orderId =response.orderId;
-                    if(orderId == null){
-                        alert ('error');
-                    }
-                    else{
-                        window.location =`confirmation.html?id=${orderId}`;
-                    }
-                  })
-                .catch( error => alert('error'))
-                
+//vérifie les champs du formulaire et l'envoie si tout est bon
+function formSubmit(cart_items) {
+    const submit = document.querySelector(".cart__order__form__submit input[id='order']") ;
+    submit.addEventListener('click', function(event){
+        event.preventDefault();
+        // Contrôle de validité des champs
+        let errors = false;
+        let verifEmail 	= /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/;
+        let verifName = /^[a-zA-Z\-]+$/;
+        let verifAddress = /^[0-9a-zA-Z\s,-]+$/;
+        let verifCity = /^[A-Z][-a-zA-Z\s]+$/;
+        const error_messages = document.querySelectorAll('.error-message');
+        error_messages.forEach(error_message => {
+            error_message.innerHTML = '';
+        });
+        let firstName = document.getElementById("firstName").value;
+        if(verifName.exec(firstName)== null || firstName.value == ''){
+            document.querySelector("#firstNameErrorMsg").textContent ="Le prénom est erroné";
+            errors = true;
+        }
+        let lastName = document.getElementById("lastName").value
+        if(verifName.exec(lastName) == null || lastName.value == ''){
+            document.querySelector("#lastNameErrorMsg").textContent ="Le nom est erroné";
+            errors = true;
+        }
+        let address = document.getElementById("address").value
+        if(verifAddress.exec(address)== null || address.value == ''){
+            document.querySelector("#addressErrorMsg").textContent = "L'adresse' est erroné";
+            errors = true;
+        }
+        let city = document.getElementById("city").value
+        if(verifCity.exec(city)== null || city.value == ''){
+            document.querySelector("#cityErrorMsg").textContent = "Le nom de la ville est erroné";
+            errors = true;
+        }
+        let email = document.getElementById("email").value
+        if(verifEmail.exec(email)== null || email.value == ''){
+            document.querySelector("#emailErrorMsg").textContent = "L'émail est erroné";
+            errors = true;
+        }
+        // Si il y a des erreurs, on n'envoie pas le formulaire.
+        if(errors == true){
+            return false;
+        }
+        let cart_itemsId = []
+        cart_items.forEach(element => {
+            cart_itemsId.push(element.id);
         })
-    }
-    
-/**
- * recuperer le orderId si il existe window location ver page confirm sinon erreur
- */
+        let form = { contact : {
+            firstName: document.getElementById("firstName").value,
+            lastName : document.getElementById("lastName").value,
+            address : document.getElementById("address").value,
+            city : document.getElementById("city").value,
+            email : document.getElementById("email").value,}, 
+            products : cart_itemsId
+        };
+        fetch("http://localhost:3000/api/products/order", {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify(form)
+            })
+        .then(res => res.json())
+        .then(function(response) {
+            console.log(response.orderId);
+            let orderId =response.orderId;
+            if(orderId == null){
+                alert ('error');
+            }
+            else{
+                window.location =`confirmation.html?id=${orderId}`;
+            }
+            })
+        .catch( error => alert("Impossible de se connecter au serveur l'envoie du formulaire est impossible"))   
+    })
+}
 
 
 
