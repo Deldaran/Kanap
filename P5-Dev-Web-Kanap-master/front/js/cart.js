@@ -114,8 +114,8 @@ function formSubmit(cart_items) {
         // Contrôle de validité des champs
         let errors = false;
         let verifEmail 	= /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/;
-        let verifName = /^[a-zA-Z\-]+$/;
-        let verifAddress = /^[0-9a-zA-Z\s,-]+$/;
+        let verifName = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\-]+$/;
+        let verifAddress = /^[0-9a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s,-]+$/;
         let verifCity = /^[A-Z][-a-zA-Z\s]+$/;
         const error_messages = document.querySelectorAll('.error-message');
         error_messages.forEach(error_message => {
